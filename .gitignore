@@ -1,0 +1,6 @@
+Data/
+runs/
+__pycache__/
+*.pyc
+*.cache
+Thumbs.db

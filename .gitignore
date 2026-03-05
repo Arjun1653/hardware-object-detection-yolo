@@ -5,6 +5,8 @@ __pycache__/
 *.pyc
 *.cache
 Thumbs.db
+*.pt
+*.pth
 =======
 # Byte-compiled / optimized / DLL files
 __pycache__/

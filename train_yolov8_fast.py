@@ -17,7 +17,7 @@ MODEL_SIZE  = "yolov8n.pt"   # NANO — smallest and fastest model
 EPOCHS      = 50             # Half the original (early stopping will cut this further)
 BATCH_SIZE  = 64             # Large batch = fewer steps per epoch = faster
 IMG_SIZE    = 416            # Smaller than default 640 — big speed boost
-WORKERS     = 8              # More parallel image loading
+WORKERS     = 2              # Windows: MUST be 2-4. Higher values exhaust shared memory and crash.
 # ──────────────────────────────────────────────────────
 
 def train():
@@ -38,8 +38,9 @@ def train():
         exist_ok  = True,
 
         # ── SPEED OPTIMIZATIONS ──────────────────────
-        cache     = "ram",    # Load entire dataset into RAM — eliminates disk I/O
-                              # Needs ~3-4 GB free RAM. Change to False if you run out.
+        cache     = "disk",   # RAM cache needs 6.5GB but you only have 4.9GB free.
+                              # disk cache pre-processes images once to disk — still faster than no cache.
+                              # Change to "ram" only if you close other apps and free up RAM first.
         amp       = True,     # Mixed precision (FP16) — halves VRAM, ~30% faster
         patience  = 15,       # Stop early if no improvement for 15 epochs
         optimizer = "SGD",    # SGD converges faster than AdamW for detection tasks

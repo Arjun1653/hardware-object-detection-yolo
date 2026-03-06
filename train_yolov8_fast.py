@@ -34,7 +34,7 @@ RUN_NAME    = "hardware_s_v1"
 
 MODEL_SIZE  = "yolov8s.pt"   # Small — better accuracy
 EPOCHS      = 100
-BATCH_SIZE  = 32             # Reduced from 64 — yolov8s is larger, needs more VRAM per image
+BATCH_SIZE  = 16             # Reduced from 64 — yolov8s is larger, needs more VRAM per image
 IMG_SIZE    = 640            # Full resolution — helps detect small nuts and washers
 WORKERS     = 2              # MUST be 2 on Windows — higher values cause shared memory crash
 # ──────────────────────────────────────────────────────

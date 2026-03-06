@@ -4,22 +4,34 @@ Real-time detection of hardware components (screws, bolts, nuts, washers) using 
 
 ---
 
-## Demo
-> Training in progress — results will be added here after training completes.
+## Results
 
----
+### YOLOv8s (Current Best Model)
+| Metric | Value |
+|--------|-------|
+| Training Time | 5 hours 20 minutes |
+| Epochs | 100 |
+| Image Size | 640×640 |
+| mAP50 | **0.732** |
+| mAP50-95 | **0.500** |
 
-## Project Structure
-```
-Vision_2/
-├── train_yolov8.py          # Full training script (accuracy-focused)
-├── train_yolov8_fast.py     # Fast training script (speed-optimized)
-└── Data/
-    ├── train/               # 9008 training images + labels
-    ├── valid/               # 2563 validation images + labels
-    ├── test/                # Test images + labels
-    └── data.yaml            # Dataset config
-```
+#### Per-Class Performance
+| Class | Precision | Recall | mAP50 | mAP50-95 |
+|-------|-----------|--------|-------|----------|
+| Bolt | 0.875 | 0.806 | 0.862 | 0.695 |
+| Screw | 0.797 | 0.750 | 0.792 | 0.483 |
+| Nut | 0.789 | 0.602 | 0.669 | 0.480 |
+| Washer | 0.821 | 0.503 | 0.605 | 0.340 |
+| **All** | **0.820** | **0.665** | **0.732** | **0.500** |
+
+### YOLOv8n (Baseline)
+| Metric | Value |
+|--------|-------|
+| Training Time | ~50 minutes |
+| Epochs | 50 |
+| Image Size | 416×416 |
+| mAP50 | 0.672 |
+| mAP50-95 | 0.422 |
 
 ---
 
@@ -29,16 +41,23 @@ Dataset sourced from Roboflow Universe:
 
 - 9008 training images
 - 2563 validation images
-- 4 classes: screws, bolts, nuts, washers
+- 4 classes: Bolt, Screw, Nut, Washer
 - Format: YOLOv8 (bounding box + polygon labels)
 
 ---
 
-## Model
-- Architecture: YOLOv8 (Ultralytics)
-- Variant used: `yolov8n` (nano) for fast training, `yolov8m` (medium) for accuracy
-- Input resolution: 416×416
-- GPU: NVIDIA RTX 4050 Laptop (6GB VRAM)
+## Project Structure
+```
+Vision_2/
+├── train_yolov8.py           # Full training script (accuracy-focused)
+├── train_yolov8_fast.py      # Fast training script (speed-optimized)
+├── detect.py                 # Inference script — single image, folder, or webcam
+└── Data/
+    ├── train/                # 9008 training images + labels
+    ├── valid/                # 2563 validation images + labels
+    ├── test/                 # Test images + labels
+    └── data.yaml             # Dataset config
+```
 
 ---
 
@@ -52,28 +71,37 @@ pip install ultralytics torch torchvision
 ### 2. Download the dataset
 Get the dataset from [Roboflow](https://app.roboflow.com/vision05/arg_bolts_fv-ojjwp/1) and place it in the `Data/` folder.
 
-### 3. Run training
+### 3. Train
 ```bash
-# Fast training (recommended to start)
+# Fast training — yolov8s, 640px (recommended)
 python train_yolov8_fast.py
 
-# Full training (more accurate, slower)
+# Full training — yolov8m, 640px (more accurate, slower)
 python train_yolov8.py
 ```
 
-### 4. Results
-Trained weights and plots are saved to:
+### 4. Run detection on your own images
+Edit the `SOURCE` line in `detect.py`:
+```python
+SOURCE = r"C:\path\to\your\image.jpg"   # single image
+SOURCE = r"C:\path\to\your\folder"      # folder of images
+SOURCE = 0                              # webcam
 ```
-runs/hardware_fast_v2/weights/best.pt
+Then run:
+```bash
+python detect.py
 ```
+Annotated results are saved to `results/detections/`.
 
 ---
 
-## Requirements
-- Python 3.11
-- PyTorch 2.5+ with CUDA 12.1
-- Ultralytics 8.4+
-- NVIDIA GPU (CUDA-capable)
+## Hardware & Environment
+| | |
+|---|---|
+| GPU | NVIDIA GeForce RTX 4050 Laptop (6GB VRAM) |
+| Python | 3.11.7 |
+| PyTorch | 2.5.1 + CUDA 12.1 |
+| Ultralytics | 8.4.12 |
 
 ---
 
